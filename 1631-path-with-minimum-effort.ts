@@ -119,6 +119,80 @@ class UnionFind {
         this.root = [...new Array(size).keys()];
         this.rank = new Array(size).fill(1);
     }
+    
+    find(x) {
+        if (x !== this.root[x]) {
+            this.root[x] = this.find(this.root[x]);
+        }
+        
+        return this.root[x];
+    }
+    
+    union(x, y) {
+        const rootX = this.find(x);
+        const rootY = this.find(y);
+        
+        if (rootX === rootY) return;
+        
+        if (this.rank[rootX] < this.rank[rootY]) {
+            this.root[rootX] = rootY;
+        } else {
+            this.root[rootY] = rootX;
+            
+            if (this.rank[rootX] === this.rank[rootY]) {
+                this.rank[rootX]++;
+            }
+        }
+    }
+}
+
+
+function minimumEffortPath(heights: number[][]): number {
+    const rows = heights.length;
+    const cols = heights[0].length;
+    const edges = [];
+    const uf = new UnionFind(rows * cols);
+    
+    if (rows === 1 && cols === 1) return 0;
+    
+    for (let row = 0; row < rows; ++row) {
+        for (let col = 0; col < cols; ++col) {
+            if (row > 0) {
+                const diff = Math.abs(heights[row][col] - heights[row - 1][col]);
+                
+                edges.push([diff, row * cols + col, (row - 1) * cols + col]);
+            }
+            
+            if (col > 0) {
+                const diff = Math.abs(heights[row][col] - heights[row][col - 1]);
+                
+                edges.push([diff, row * cols + col, row * cols + col - 1]);
+            }
+        }
+    }
+    
+    edges.sort((a, b) => a[0] - b[0]);
+    
+    for (const [diff, y, x] of edges) {
+        uf.union(x, y);
+        
+        if (uf.find(0) === uf.find(rows * cols - 1)) {
+            return diff;
+        }
+    }
+    
+    return -1;
+};
+
+
+class UnionFind {
+    root: number[];
+    rank: number[];
+
+    constructor(size) {
+        this.root = [...new Array(size).keys()];
+        this.rank = new Array(size).fill(1);
+    }
 
     find(x) {
         if (x !== this.root[x]) {

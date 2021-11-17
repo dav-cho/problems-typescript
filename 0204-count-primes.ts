@@ -7,6 +7,40 @@
 **/
 function countPrimes(n: number): number {
     if (n < 3) return 0;
+    
+    const vals = new Array(n).fill(1);
+    
+    for (let i = 2; i <= Math.floor(Math.sqrt(n)); ++i) {
+        if (vals[i]) {
+            for (let mult = i * i; mult < n; mult += i) {
+                vals[mult] = 0;
+            }
+        }
+    }
+    
+    return vals.reduce((sum, x) => sum + x) - 2;
+};
+
+
+function countPrimes(n: number): number {
+    if (n < 3) return 0;
+    
+    const vals = new Array(n).fill(1);
+    
+    for (let i = 2; i <= Math.floor(Math.sqrt(n)); ++i) {
+        if (vals[i]) {
+            for (let mult = i * i; mult < n; mult += i) {
+                vals[mult] = 0;
+            }
+        }
+    }
+    
+    return vals.filter(x => x).length - 2;
+};
+
+
+function countPrimes(n: number): number {
+    if (n < 3) return 0;
 
     const nums = new Array(n).fill(1);
 
