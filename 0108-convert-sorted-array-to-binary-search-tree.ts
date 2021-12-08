@@ -90,6 +90,31 @@ function sortedArrayToBST(nums: number[]): TreeNode | null {
     const left = 0;
     const right = nums.length - 1;
     const root = new TreeNode(nums[Math.floor(right / 2)]);
+    const stack: [TreeNode | null, number, number][] = [[root, left, right]];
+    
+    while (stack.length) {
+        const [node, left, right] = stack.pop();
+        const mid = Math.floor((left + right) / 2);
+        
+        if (!node) continue;
+        if (left < mid) {
+            node.left = new TreeNode(nums[Math.floor((left + mid - 1) / 2)]);
+            stack.push([node.left, left, mid - 1]);
+        }
+        if (right > mid) {
+            node.right = new TreeNode(nums[Math.floor((mid + 1 + right) / 2)]);
+            stack.push([node.right, mid + 1, right]);
+        }
+    }
+    
+    return root;
+};
+
+
+function sortedArrayToBST(nums: number[]): TreeNode | null {
+    const left = 0;
+    const right = nums.length - 1;
+    const root = new TreeNode(nums[Math.floor(right / 2)]);
     const stack: [TreeNode, number, number][] = [[root, left, right]];
     
     while (stack.length) {
