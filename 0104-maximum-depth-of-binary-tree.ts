@@ -33,6 +33,33 @@ function maxDepth(root: TreeNode | null): number {
     if (!root) return 0;
     
     let queue = [root];
+    let res = 0;
+    
+    while (queue.length) {
+        const level = [];
+        
+        res++;
+        
+        for (const node of queue) {
+            if (node.left) {
+                level.push(node.left);
+            }
+            if (node.right) {
+                level.push(node.right);
+            }
+        }
+        
+        queue = level;
+    }
+    
+    return res;
+};
+
+
+function maxDepth(root: TreeNode | null): number {
+    if (!root) return 0;
+    
+    let queue = [root];
     let depth = 0;
     
     while (queue.length) {
@@ -68,6 +95,25 @@ function maxDepth(root: TreeNode | null): number {
     }
     
     return depth;
+};
+
+
+function maxDepth(root: TreeNode | null): number {
+    if (!root) return 0;
+    
+    const stack: [TreeNode, number][] = [[root, 1]];
+    let res = 0;
+    
+    while (stack.length) {
+        const [node, currDepth] = stack.pop();
+        
+        res = Math.max(res, currDepth);
+        
+        if (node.left) stack.push([node.left, currDepth + 1]);
+        if (node.right) stack.push([node.right, currDepth + 1]);
+    }
+    
+    return res;
 };
 
 
