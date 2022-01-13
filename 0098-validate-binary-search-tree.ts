@@ -18,39 +18,39 @@ class TreeNode {
 
 
 /**
-* recursive
+* recursive with valid range
 **/
 function isValidBST(root: TreeNode | null): boolean {
-    const helper = (node, low = -Infinity, high = Infinity) => {
+    const validate = (node, lower, upper) => {
         if (!node) return true;
+        if (node.val <= lower || node.val >= upper) {
+            return false;
+        }
         
-        if (node.val <= low || node.val >= high) return false;
-        
-        const left = helper(node.left, low, node.val);
-        const right = helper(node.right, node.val, high);
+        const left = validate(node.left, lower, node.val);
+        const right = validate(node.right, node.val, upper);
         
         return left && right;
     }
     
-    return helper(root);
+    return validate(root, -Infinity, Infinity);
 };
 
 
 /**
-* iterative
+* iterative with valid range
 **/
 function isValidBST(root: TreeNode | null): boolean {
     const stack: [TreeNode, number, number][] = [[root, -Infinity, Infinity]];
     
     while (stack.length) {
-        const [root, low, high] = stack.pop();
+        const [node, lower, upper] = stack.pop();
         
-        if (!root) continue;
+        if (!node) continue;
+        if (node.val <= lower || node.val >= upper) return false;
         
-        if (root.val <= low || root.val >= high) return false;
-        
-        stack.push([root.left, low, root.val]);
-        stack.push([root.right, root.val, high]);
+        stack.push([node.left, lower, node.val]);
+        stack.push([node.right, node.val, upper]);
     }
     
     return true;
@@ -58,8 +58,50 @@ function isValidBST(root: TreeNode | null): boolean {
 
 
 /**
-* iterative - dfs inorder traversal
+* dfs inorder traversal - recursive
 **/
+function isValidBST(root: TreeNode | null): boolean {
+    let prev = -Infinity;
+    
+    const dfsInorder = node => {
+        if (!node) return true;
+        if (!dfsInorder(node.left)) return false;
+        if (node.val <= prev) return false;
+        
+        prev = node.val;
+        
+        return dfsInorder(node.right);
+    }
+    
+    return dfsInorder(root);
+};
+
+
+/**
+* dfs inorder traversal - iterative
+**/
+function isValidBST(root: TreeNode | null): boolean {
+    const stack = [];
+    let prev = -Infinity;
+    
+    while (stack.length || root) {
+        while (root) {
+            stack.push(root);
+            root = root.left;
+        }
+        
+        root = stack.pop();
+        
+        if (root.val <= prev) return false;
+        
+        prev = root.val;
+        root = root.right;
+    }
+    
+    return true;
+};
+
+
 function isValidBST(root: TreeNode | null): boolean {
     const vals = [];
     
